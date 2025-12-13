@@ -3,7 +3,7 @@ from flask import Flask
 app = Flask(__name__)
 
 def static_function():
-    return "OK"
+    return "ERR"
 
 @app.route("/")
 def hello_world():
