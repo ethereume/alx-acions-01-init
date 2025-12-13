@@ -8,4 +8,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Wypisz powitanie
-        run ls -la
+        run: ls -la
