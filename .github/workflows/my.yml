@@ -1,0 +1,11 @@
+name: My log 
+
+on:
+  push:
+    branches: [ main ]
+jobs:
+  print-logs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wypisz powitanie
+        run ls -la
