@@ -1,4 +1,4 @@
-name: My log 
+name: My log
 
 on:
   push:
