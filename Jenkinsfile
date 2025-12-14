@@ -4,12 +4,10 @@ pipeline {
     environment {
         PYTHON   = 'python3'
         VENV_DIR = '.venv'
-        PIP_CACHE_DIR = "${WORKSPACE}/.pip-cache"
     }
 
     options {
         timestamps()
-        ansiColor('xterm')
         timeout(time: 10, unit: 'MINUTES')
     }
 
@@ -27,8 +25,6 @@ pipeline {
                     ${PYTHON} --version
                     ${PYTHON} -m venv ${VENV_DIR}
                     . ${VENV_DIR}/bin/activate
-
-                    mkdir -p "${PIP_CACHE_DIR}"
                     python -m pip install --upgrade pip
                     pip install -r requirements.txt
                 '''
@@ -49,7 +45,6 @@ pipeline {
 
     post {
         always {
-            // Publikacja wyników testów w Jenkinsie (wymaga pluginu "JUnit")
             junit allowEmptyResults: true, testResults: 'reports/junit-report.xml'
             archiveArtifacts artifacts: 'reports/junit-report.xml', allowEmptyArchive: true
         }
