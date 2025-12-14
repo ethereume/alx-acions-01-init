@@ -1,11 +1,38 @@
-name: My log
+name: Email
 
 on:
   push:
     branches: [ main ]
+
+env:
+  REPO_NAME: ${{ github.event.repository.name }}
+
 jobs:
-  print-logs:
+  ls_and_email:
     runs-on: ubuntu-latest
     steps:
-      - name: Wypisz powitanie
-        run: ls -la
+      - name: Zapisz wynik ls -la do pliku
+        run: |
+          ls -la | tee ls.txt
+
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: mail.abix.info.pl
+          server_port: 465
+          secure: true
+
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+
+          to: adam@jurkiewicz.tech
+          from: GitHub Actions <alx-kurs@abix.info.pl>
+          subject: "GitHub Actions – ls -la: ${{ job.status }} (repo: ${{ env.REPO_NAME }})"
+
+          body: |
+            Repozytorium: ${{ env.REPO_NAME }}
+            Status: ${{ job.status }}
+            Zobacz załącznik ls.txt.
+
+          attachments: ls.txt
