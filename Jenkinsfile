@@ -12,9 +12,10 @@ pipeline {
             }
         }
         
+        
         stage('Run with venv') {
             options {
-                timeout(time: 4, unit: 'MINUTES') 
+                timeout(time: 1, unit: 'MINUTES') 
                 }
 
             
@@ -24,25 +25,19 @@ pipeline {
                         python3 -m venv venv
                         . venv/bin/activate
                         pip install -r requirements.txt
-                        python3 app.py
+                        nohup python3 app.py > app.log 2>&1 &
+                        sleep 3
                         '''
                 }
             }
         }
-    
         
         
+        
+        stage('Verify Deployment') {
+            steps {
+                sh 'sleep 5'
+                sh 'curl -f http://localhost:5000 || exit 1'
+            }
+        }
     }
-    
-   // abort zmieniamy w sukces na końcu
-   post {
-    aborted {
-      script {
-        // jeśli chcesz traktować timeout/abort jako sukces
-        currentBuild.result = 'SUCCESS'
-      }
-    }
-  }
-   
-   
-}
